@@ -1,6 +1,6 @@
 ![banner](https://raw.githubusercontent.com/DataStax-Academy/cassandra-workshop-series/master/materials/images/banner2.png)
 
-# ✨ Cassandra in Kubernetes✨
+# ✨Cassandra in Kubernetes✨
 
 [![License Apache2](https://img.shields.io/hexpm/l/plug.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 [![Discord](https://img.shields.io/discord/685554030159593522)](https://discord.com/widget?id=685554030159593522&theme=dark)
@@ -24,10 +24,10 @@ In this repository, you'll find everything you need related to `week 5` of the *
 
 | Title  | Description | Type |
 |---|---|---|
-| **Installation and prerequisites** | [Instructions](#1-create-a-kubernetes-cluster) | Required |
-| **Working with the Cassandra Operator** | [Instructions](./README_CASSANDRA.MD)  | Required |
-| **Metrics in Prometheus & Grafana** | [Instructions](./README_METRICS.MD)  | Required |
-| **K8s Dashboard** | [Instructions](./README_DASHBOARD.MD)  | Bonus |
+| **Installation and prerequisites** | [Section](#1-create-a-kubernetes-cluster) | Required |
+| Working with the Cassandra Operator | [Section](./README_CASSANDRA.MD)  | Required |
+| Metrics in Prometheus & Grafana | [Section](./README_METRICS.MD)  | Required |
+| K8s Dashboard | [Section](./README_DASHBOARD.MD)  | Bonus |
 
 
 ## Create a Kubernetes Cluster
