@@ -24,11 +24,11 @@ In this repository, you'll find everything you need related to `week 5` of the *
 
 | Title  | Description
 |---|---|
-| **1. Installation and prerequisites** | [Instructions](#1-setup-your-cluster) |
-| **2. Working with the Cassandra Operator** | [Instructions](#2-install-cass-operator)  |
-| **3. Export metrics in Prometheus Grafana** | [Instructions](#3-prometheus_grafana)  |
-| **4. Browse your cluster** | [Instructions](#4-browse-your-cluster)  |
-| **5. Scale up our cluster** | [Instructions](#5-scale-up-our-cluster)  |
+| **1. Installation and prerequisites** | [Instructions](#0-setup-your-cluster) |
+| **2. Working with the Cassandra Operator** | [Instructions](#1-install-cass-operator)  |
+| **3. Export metrics in Prometheus Grafana** | [Instructions](#2-prometheus_grafana)  |
+| **4. Browse your cluster** | [Instructions](#3-browse-your-cluster)  |
+| **5. Scale up our cluster** | [Instructions](#4-scale-up-our-cluster)  |
 
 ## 1. Create a Kubernetes Cluster
 
@@ -207,7 +207,7 @@ During this workshop we will work with a cluster with multiple Cassandra nodes. 
 
 **✅ Step 1.5a. Execute the following command to create a kubernetes cluster**
 ```bash
-kind create cluster --name kind-cassandra --config ./0-setup-your-cluster/01-kind-config.yaml
+kind create cluster --name kind-cassandra --config ./setup-your-cluster/01-kind-config.yaml
 ```
 
 📗 **Expected output**
@@ -326,7 +326,7 @@ volumeBindingMode: WaitForFirstConsumer
 **✅ Step 1.6d. Execute the following command to create a new `storageClass` named `server-storage`**
 For the rest of this guide, we would assume you have defined a `StorageClass` and named it `server-storage`. 
 ```bash
-kubectl -n cass-operator apply -f ./0-setup-your-cluster/02-storageclass-kind.yaml
+kubectl -n cass-operator apply -f ./setup-your-cluster/02-storageclass-kind.yaml
 ```
 
 **✅ Step 1.6e. Execute the following command to list the storageClass**
@@ -355,7 +355,7 @@ Generally, `cluster-admin` privileges are required to register a CustomResourceD
 **✅ Step 2a. Apply the manifest**
 Apply the manifest above, and wait for the deployment to become ready. You can watch the progress by getting the list of pods for the namespace, as demonstrated below:
 ```bash
-kubectl -n cass-operator apply -f ./1-cassandra/11-install-cass-operator-v1.1.yaml
+kubectl -n cass-operator apply -f ./cassandra/11-install-cass-operator-v1.1.yaml
 ```
 📗 **Expected output**
 ```bash
@@ -477,7 +477,7 @@ Apply this file via `kubectl` and watch the list of pods as the operator deploys
 
 **✅ Step 3a. Create the cluster**
 ```bash
-kubectl -n cass-operator apply -f ./1-cassandra/12-cassandra-cluster-1nodes.yaml
+kubectl -n cass-operator apply -f ./cassandra/12-cassandra-cluster-1nodes.yaml
 ```
 **✅ Step 3b. Watch progression**
 ```bash
@@ -796,7 +796,7 @@ In the following chapter we will expand our cluster from 1 node to 3 nodes.
 
 **✅ Step 5a. Compare files `12-cassandra-cluster-1nodes` and  `13-cassandra-cluster-3nodes`**
 ```bash
-diff ./1-cassandra/12-cassandra-cluster-1nodes.yaml ./1-cassandra/13-cassandra-cluster-3nodes.yaml
+diff ./cassandra/12-cassandra-cluster-1nodes.yaml ./cassandra/13-cassandra-cluster-3nodes.yaml
 ```
 📗 **Expected output**
 ```bash
@@ -808,7 +808,7 @@ diff ./1-cassandra/12-cassandra-cluster-1nodes.yaml ./1-cassandra/13-cassandra-c
 
 **✅ Step 5b. Execute the following command to Apply the new configuration**
 ```bash
-kubectl -n cass-operator apply -f ./1-cassandra/13-cassandra-cluster-3nodes.yaml
+kubectl -n cass-operator apply -f ./cassandra/13-cassandra-cluster-3nodes.yaml
 ```
 
 **✅ Step 5c. Execute the following command to watch evolution of the cluster**
@@ -1024,7 +1024,7 @@ exit
 
 **✅ Step 6a. Use diff to show new config**
 ```bash
-diff ./1-cassandra/13-cassandra-cluster-3nodes.yaml ./1-cassandra/14-cassandra-cluster-3nodes-newconfig.yaml 
+diff ./cassandra/13-cassandra-cluster-3nodes.yaml ./cassandra/14-cassandra-cluster-3nodes-newconfig.yaml 
 ```
 📗 **Sample output**
 ```
@@ -1034,7 +1034,7 @@ diff ./1-cassandra/13-cassandra-cluster-3nodes.yaml ./1-cassandra/14-cassandra-c
 
 **✅ Step 6b. Apply the configuration**
 ```bash
-kubectl -n cass-operator apply -f ./1-cassandra/14-cassandra-cluster-3nodes-newconfig.yaml 
+kubectl -n cass-operator apply -f ./cassandra/14-cassandra-cluster-3nodes-newconfig.yaml 
 ```
 
 **✅ Step 6c. Watch the rolling update of the operator**
