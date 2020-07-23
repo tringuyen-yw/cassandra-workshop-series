@@ -24,25 +24,23 @@ In this repository, you'll find everything you need related to `week 5` of the *
 
 | Title  | Description
 |---|---|
-| **1. Installation and prerequisites** | [Instructions](#0-setup-your-cluster) |
-| **2. Working with the Cassandra Operator** | [Instructions](#1-install-cass-operator)  |
-| **3. Export metrics in Prometheus Grafana** | [Instructions](#2-prometheus_grafana)  |
-| **4. Browse your cluster** | [Instructions](#3-browse-your-cluster)  |
-| **5. Scale up our cluster** | [Instructions](#4-scale-up-our-cluster)  |
+| **1. Installation and prerequisites** | [Instructions](#1-create-a-kubernetes-cluster) |
+| **2. Working with the Cassandra Operator** | [Instructions](#2-install-cass-operator)  |
+| **3. Create a single node cluster** | [Instructions](#3-create-a-single-node-cluster)  |
+| **4. Browse your cluster** | [Instructions](#4-browse-your-cluster)  |
+| **5. Scale up our cluster** | [Instructions](#5-scale-up-our-cluster)  |
 
 ## 1. Create a Kubernetes Cluster
 
 This guide will show you how to install a **Kubernetes** cluster on a single machine in order to later, deploy an Apache Cassandra™ database. It be composed of one *master* and multiple *workers*. 
 
-**IMPORTANT** If you are using our cloud test instance (like `wks78879.k8s-workshop.datastaxtraining.com`), please start with the Step 7!
-
 ### 1.1 Install Docker
 
 Docker is an open-source project that automates the deployment of software applications inside containers by providing an additional layer of abstraction and automation of OS-level virtualization on Linux.
 
-![Windows](https://github.com/DataStax-Academy/kubernetes-workshop-online/blob/master/4-materials/images/windows32.png?raw=true) : To install on **windows** please use the following installer [Docker Dekstop for Windows Installer](https://download.docker.com/win/stable/Docker%20Desktop%20Installer.exe)
+![Windows](https://github.com/DataStax-Academy/kubernetes-workshop-online/blob/master/4-materials/images/windows32.png?raw=true) : To install on **windows** please use the following installer [Docker Desktop for Windows Installer](https://download.docker.com/win/stable/Docker%20Desktop%20Installer.exe)
 
-![osx](https://github.com/DataStax-Academy/kubernetes-workshop-online/blob/master/4-materials/images/mac32.png?raw=true) : To install on **MAC OS**  use [Docker Dekstop for MAC Installer](https://download.docker.com/mac/stable/Docker.dmg) or [homebrew](https://docs.brew.sh/Installation) with following commands:
+![osx](https://github.com/DataStax-Academy/kubernetes-workshop-online/blob/master/4-materials/images/mac32.png?raw=true) : To install on **MAC OS**  use [Docker Desktop for MAC Installer](https://download.docker.com/mac/stable/Docker.dmg) or [homebrew](https://docs.brew.sh/Installation) with following commands:
 ```bash
 # Fetch latest version of homebrew and formula.
 brew update              
@@ -340,6 +338,7 @@ server-storage (default)   rancher.io/local-path   Delete          WaitForFirstC
 standard (default)         rancher.io/local-path   Delete          WaitForFirstConsumer   false                  88m
 ```
 
+[🏠 Back to Table of Contents](#exercises)
 ## 2. Install Cass Operator
 
 Cass Operator simplifies the process of deploying and managing Cassandra or DSE in a Kubernetes cluster.
@@ -471,6 +470,7 @@ kubectl -n cass-operator get cassandradatacenter
 kubectl -n cass-operator get configMap
 ```
 
+[🏠 Back to Table of Contents](#exercises)
 ## 3. Create a single node cluster
 
 Apply this file via `kubectl` and watch the list of pods as the operator deploys them. Completing a deployment may take several minutes per node.
@@ -600,6 +600,7 @@ kubectl -n cass-operator get pods
 kubectl -n cass-operator get persistentVolumes
 ```
 
+[🏠 Back to Table of Contents](#exercises)
 ## 4. Browse your cluster
 
 By default, a cassandra superuser gets created by the operator. A Kubernetes secret will be created for it, named `<cluserName>-superuser`. It will contain username and password keys.
@@ -790,9 +791,10 @@ exit
 exit
 ```
 
-## 5 - Scale up our cluster
+[🏠 Back to Table of Contents](#exercises)
+## 5. Scale up our cluster
 
-In the following chapter we will expand our cluster from 1 node to 3 nodes.
+In the following section we will expand our cluster from 1 node to 3 nodes.
 
 **✅ Step 5a. Compare files `12-cassandra-cluster-1nodes` and  `13-cassandra-cluster-3nodes`**
 ```bash
