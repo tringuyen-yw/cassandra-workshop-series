@@ -9,15 +9,15 @@ package com.datastax.workshop;
 public interface DBConnection {
     
     // This is the Zip file you downloaded
-    String SECURE_CONNECT_BUNDLE = "/Users/cedricklunven/Downloads/secure-connect-devworkshopdb.zip";
+    String SECURE_CONNECT_BUNDLE = "/Users/tri/Documents/CASSANDRA/secure-connect-killrvideocluster.zip";
 
     // This is the username, recommended value was KVUser
-    String USERNAME = "todouser";
+    String USERNAME = "KVUser";
 
     // This is the password, recommended value was KVPassword
-    String PASSWORD = "todopassword";
+    String PASSWORD = "KVPassword";
     
     // This is the keyspace name, recommended value was killrvideo
-    String KEYSPACE = "todoapp";
+    String KEYSPACE = "killrvideo";
     
 }
