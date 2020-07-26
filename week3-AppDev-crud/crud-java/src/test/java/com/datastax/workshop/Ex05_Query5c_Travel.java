@@ -21,6 +21,18 @@ public class Ex05_Query5c_Travel extends TestFixtures implements DataModelConsta
      */
     @Test
     public void save_readings() throws InterruptedException {
+        // delete previous readings to make this test idempotent
+        // Reason: the sensor readings have PK = ((spacecraft, journeyId), reading_time)
+        // Each time this test is executed, 50 rows are inserted (and not upserted) in eash sensor table
+        // As a results, when this test is executed several times, this makes the verification
+        // a bit complex as there will be many rows (4 test runs = 200 rows per sensor table)
+        LOGGER.info("Delete previous sensors readings ...");
+        journeyRepo.deleteSensorReadings(
+            this.TEST_SPACECRAFT,
+            UUID.fromString(this.TEST_JOURNEYID)
+        );
+
+        LOGGER.info("Record new sensors readings ...");
         for(int i=0;i<50;i++) {
             double speed        = 300+i+Math.random()*10;
             double pressure     = Math.random()*20;
