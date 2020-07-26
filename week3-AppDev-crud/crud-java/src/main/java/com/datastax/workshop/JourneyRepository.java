@@ -74,9 +74,14 @@ public class JourneyRepository implements DataModelConstants {
      *  Check result with 
      *  select journey_id, spacecraft_name,summary,start,end,active from killrvideo.spacecraft_journey_catalog; 
      */
-    public void takeoff(UUID journeyId, String spacecraft) {
+    public void takeoff(
+        String spacecraft,
+        UUID journeyId,
+        String journeySummary
+    ) {
         cqlSession.execute(SimpleStatement.builder(SOLUTION_TAKEOFF)
                 .addPositionalValue(Instant.now())
+                .addPositionalValue(journeySummary)
                 .addPositionalValue(spacecraft)
                 .addPositionalValue(journeyId)
                 .build());
@@ -91,7 +96,10 @@ public class JourneyRepository implements DataModelConstants {
      *  - Timestamps are Instant in the Java world 
      *  
      *  Check result with 
-     *  select journey_id, spacecraft_name,summary,start,end,active from killrvideo.spacecraft_journey_catalog; 
+     *  SELECT * FROM killrvideo.spacecraft_speed_over_time;
+     *  SELECT * FROM killrvideo.spacecraft_temperature_over_time;
+     *  SELECT * FROM killrvideo.spacecraft_pressure_over_time;
+     *  SELECT * FROM killrvideo.spacecraft_location_over_time;
      */
     public void log(UUID journeyId, String spacecraft, double speed, 
             double pressure, double temperature, 
@@ -154,14 +162,19 @@ public class JourneyRepository implements DataModelConstants {
         cqlSession.execute(bb.build());
     }
     
-    public void landing(UUID journeyId, String spacecraft) {
+    public void landing(
+        String spacecraft,
+        UUID journeyId,
+        String journeySummary
+    ) {
         cqlSession.execute(SimpleStatement.builder(SOLUTION_LANDING)
                 .addPositionalValue(Instant.now())
+                .addPositionalValue(journeySummary)
                 .addPositionalValue(spacecraft)
                 .addPositionalValue(journeyId)
                 .build());
     }
-    
+
     public void delete(UUID journeyId, String spacecraft) {
         BatchStatementBuilder bb = new BatchStatementBuilder(BatchType.LOGGED);
         // Delete the journey
@@ -228,12 +241,12 @@ public class JourneyRepository implements DataModelConstants {
     
     private static final String SOLUTION_TAKEOFF =
             "UPDATE spacecraft_journey_catalog "
-                    + "SET active=true, start=? "
+                    + "SET active=true, start=?, summary=? "
                     + "WHERE spacecraft_name=? AND journey_id=?";
     
     private static final String SOLUTION_LANDING = 
             "UPDATE spacecraft_journey_catalog "
-                    + "SET active=false, end=? "
+                    + "SET active=false, end=?, summary=? "
                     + "WHERE spacecraft_name=? AND journey_id=?";
     
     private static final String SOLUTION_READ_JOURNEY =
