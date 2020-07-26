@@ -1,57 +1,29 @@
 package com.datastax.workshop;
 
-import java.nio.file.Paths;
 import java.util.UUID;
-
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.datastax.oss.driver.api.core.CqlSession;
 
 /**
  * Let's play !
  */ 
 @RunWith(JUnitPlatform.class)
-public class Ex06_Query5d_Landing implements DataModelConstants {
-
-    /** Logger for the class. */
-    private static Logger LOGGER = LoggerFactory.getLogger("Exercise3");
-    
-    /** Connect once for all tests. */
-    public static CqlSession cqlSession;
-    
-    /** Use the Repository Pattern. */
-    private static JourneyRepository journeyRepo;
-    
-    @BeforeAll
-    public static void initConnection() {
-        LOGGER.info("========================================");
-        LOGGER.info("Start exercise");
-        cqlSession = CqlSession.builder()
-                .withCloudSecureConnectBundle(Paths.get(DBConnection.SECURE_CONNECT_BUNDLE))
-                .withAuthCredentials(DBConnection.USERNAME, DBConnection.PASSWORD)
-                .withKeyspace(DBConnection.KEYSPACE)
-                .build();
-        journeyRepo = new JourneyRepository(cqlSession);
-    }
+public class Ex06_Query5d_Landing extends TestFixtures implements DataModelConstants {
     
     @Test
+    /**
+     * CHECK on Astra CQL Console:
+     * Must see: active=false, 'end' has valid timestamp
+     * SELECT * FROM killrvideo.spacecraft_journey_catalog WHERE spacecraft_name='Crew Dragon Endeavour,SpaceX' AND journey_id=8dfd0a30-c73b-11ea-b87b-1325d5aaa06b; 
+     */
     public void landing_journey() {
-        journeyRepo.landing(UUID.fromString(Ex04_Query5b_TakeOff.JOURNEY_ID), Ex04_Query5b_TakeOff.SPACECRAFT);
-        LOGGER.info("Journey {} has now landed", Ex04_Query5b_TakeOff.JOURNEY_ID);
+        journeyRepo.landing(
+            this.TEST_SPACECRAFT,
+            UUID.fromString(this.TEST_JOURNEYID),
+            this.TEST_JOURNEYSUMMARY + " (landing)"
+        );
+        LOGGER.info("Journey {} has now landed", this.TEST_JOURNEYID);
         LOGGER.info("SUCCESS");
-        LOGGER.info("========================================");
-    }
-    
-    @AfterAll
-    public static void closeConnectionToCassandra() {
-        if (null != cqlSession) {
-            cqlSession.close();
-        }
     }
 }

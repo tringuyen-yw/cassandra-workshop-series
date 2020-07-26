@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.datastax.oss.driver.api.core.CqlIdentifier;
 import com.datastax.oss.driver.api.core.CqlSession;
 
 /**
@@ -22,7 +23,7 @@ import com.datastax.oss.driver.api.core.CqlSession;
 public class Ex02_Connect_to_Cassandra implements DBConnection {
 
     /** Logger for the class. */
-    private static Logger LOGGER = LoggerFactory.getLogger("Exercise2");
+    private static Logger LOGGER = LoggerFactory.getLogger(Ex02_Connect_to_Cassandra.class);
     
     @Test
     @DisplayName("Test connectivity to Astra")
@@ -51,9 +52,12 @@ public class Ex02_Connect_to_Cassandra implements DBConnection {
                 .withKeyspace(DBConnection.KEYSPACE)
                 .build()) {
             
-            // Then
-            LOGGER.info("Connected with Keyspace {}", cqlSession.getKeyspace().get());
-        }
+                // Then
+                CqlIdentifier currKeyspace = cqlSession.getKeyspace().get();
+
+                Assertions.assertTrue(currKeyspace.toString().equals(DBConnection.KEYSPACE), "Keyspace name should == " + DBConnection.KEYSPACE);
+                LOGGER.info("Connected with Keyspace {}", currKeyspace);
+}
         LOGGER.info("SUCCESS");
         LOGGER.info("========================================");
     }
