@@ -34,15 +34,18 @@ public class TestFixtures {
     public static void initConnection() {
         STATICLOGGER.info("========================================");
         STATICLOGGER.info("Init CqlSession");
-        //TestUtils.createKeyspaceForLocalInstance();
+        //TestUtils.getInstance().createKeyspaceForLocalInstance();
+
+        AstraConnectionInfo conn = TestUtils.getInstance().getAstraDBConnectInfo();
+
         cqlSession = CqlSession.builder()
-            .withCloudSecureConnectBundle(Paths.get(DBConnection.SECURE_CONNECT_BUNDLE))
-            .withAuthCredentials(DBConnection.USERNAME, DBConnection.PASSWORD)
-            .withKeyspace(DBConnection.KEYSPACE)
-            .build();
-            STATICLOGGER.info("Init JourneyRepository");
-            journeyRepo = new JourneyRepository(cqlSession);
-    }
+        .withCloudSecureConnectBundle(Paths.get(conn.getSecureBundleFilename()))
+        .withAuthCredentials(conn.getUserName(), conn.getPassword())
+        .withKeyspace(conn.getKeyspace())
+        .build();
+        STATICLOGGER.info("Init JourneyRepository");
+        journeyRepo = new JourneyRepository(cqlSession);
+   }
 
     @AfterAll
     public static void closeConnectionToCassandra() {

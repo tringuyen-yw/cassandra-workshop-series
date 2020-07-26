@@ -1,16 +1,9 @@
 package com.datastax.workshop;
 
-import java.nio.file.Paths;
 import java.util.UUID;
-
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.datastax.oss.driver.api.core.CqlSession;
 
 /**
  * Let's play !
