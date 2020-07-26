@@ -1,6 +1,19 @@
 ## Bug Maven + JUnit5:
 
-`mvn test` does not excute any test. 
+`mvn test` does not excute any test (Tests run: 0)
+
+```shell
+$ mvn test
+
+... etc ...
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Results :
+
+Tests run: 0, Failures: 0, Errors: 0, Skipped: 0
+```
 
 - [Discusstion](https://community.datastax.com/questions/6846/running-mvn-test-locally-on-crud-java-project-week.html)
 
@@ -9,7 +22,7 @@
  
 ## Workaround:
 
-RUN tests individually
+Run each test individually
 
 ```shell
 cd ./week3-AppDev-crud/crud-java/
