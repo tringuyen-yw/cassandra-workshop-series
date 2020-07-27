@@ -62,9 +62,12 @@ public class Ex02_Connect_to_Cassandra {
         .build()) {
     
         // Then
-				Optional<CqlIdentifier> connectedKeyspace = cqlSession.getKeyspace();
+        Optional<CqlIdentifier> connectedKeyspace = cqlSession.getKeyspace();
 
-				Assertions.assertTrue(connectedKeyspace.isPresent(), "cqlSession must connect to a valid Keyspace");
+        Assertions.assertTrue(
+          connectedKeyspace.isPresent(),
+          "cqlSession should connect to a valid Keyspace"
+        );
 
         Assertions.assertEquals(
           connectedKeyspace.get().toString(),

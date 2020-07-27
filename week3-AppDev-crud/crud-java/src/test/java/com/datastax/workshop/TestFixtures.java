@@ -15,58 +15,58 @@ import com.datastax.oss.driver.api.core.CqlSession;
  * Common setup for all tests
  */
 public class TestFixtures {
-	/** Logger for the class. */
-	protected static Logger STATICLOGGER = LoggerFactory.getLogger(TestFixtures.class);
+  /** Logger for the class. */
+  protected static Logger STATICLOGGER = LoggerFactory.getLogger(TestFixtures.class);
 
-	/** Connect once for all tests. */
-	protected static CqlSession cqlSession;
+  /** Connect once for all tests. */
+  protected static CqlSession cqlSession;
 
-	/** Use the Repository Pattern. */
-	protected static JourneyRepository journeyRepo;
+  /** Use the Repository Pattern. */
+  protected static JourneyRepository journeyRepo;
 
-	// common logger used by test class instance
-	protected Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+  // common logger used by test class instance
+  protected Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
-	// Common journey data for all tests
-	protected String TEST_SPACECRAFT     = "Crew Dragon Endeavour,SpaceX";
-	protected String TEST_JOURNEYID      = "8dfd0a30-c73b-11ea-b87b-1325d5aaa06b";
-	protected String TEST_JOURNEYSUMMARY = "Bring Astronauts to ISS";
+  // Common journey data for all tests
+  protected String TEST_SPACECRAFT     = "Crew Dragon Endeavour,SpaceX";
+  protected String TEST_JOURNEYID      = "8dfd0a30-c73b-11ea-b87b-1325d5aaa06b";
+  protected String TEST_JOURNEYSUMMARY = "Bring Astronauts to ISS";
 
 
-	@BeforeAll
-	public static void initConnection() {
-		STATICLOGGER.info("========================================");
-		STATICLOGGER.info("Init CqlSession");
-		//TestUtils.getInstance().createKeyspaceForLocalInstance();
+  @BeforeAll
+  public static void initConnection() {
+    STATICLOGGER.info("========================================");
+    STATICLOGGER.info("Init CqlSession");
+    //TestUtils.getInstance().createKeyspaceForLocalInstance();
 
-		AstraConnectionInfo conn = TestUtils.getInstance().getAstraDBConnectInfo();
+    AstraConnectionInfo conn = TestUtils.getInstance().getAstraDBConnectInfo();
 
-		cqlSession = CqlSession.builder()
-		.withCloudSecureConnectBundle(Paths.get(conn.getSecureBundleFilename()))
-		.withAuthCredentials(conn.getUserName(), conn.getPassword())
-		.withKeyspace(conn.getKeyspace())
-		.build();
-		STATICLOGGER.info("Init JourneyRepository");
-		journeyRepo = new JourneyRepository(cqlSession);
+    cqlSession = CqlSession.builder()
+    .withCloudSecureConnectBundle(Paths.get(conn.getSecureBundleFilename()))
+    .withAuthCredentials(conn.getUserName(), conn.getPassword())
+    .withKeyspace(conn.getKeyspace())
+    .build();
+    STATICLOGGER.info("Init JourneyRepository");
+    journeyRepo = new JourneyRepository(cqlSession);
  }
 
-	@AfterAll
-	public static void closeConnectionToCassandra() {
-		if (null != cqlSession) {
-			STATICLOGGER.info("Closing CqlSession");
-			STATICLOGGER.info("========================================");
-			cqlSession.close();
-		}
-	}
+  @AfterAll
+  public static void closeConnectionToCassandra() {
+    if (null != cqlSession) {
+      STATICLOGGER.info("Closing CqlSession");
+      STATICLOGGER.info("========================================");
+      cqlSession.close();
+    }
+  }
 
-	/**
-	 * Retrieve the single row of the "Test" Journey
-	 * in the killrvideo.spacecraft_journey_catalog tableß
-	 */
-	protected Optional<Journey> findTestJourney() {
-		return journeyRepo.find(
-			UUID.fromString(this.TEST_JOURNEYID),
-			this.TEST_SPACECRAFT
-		);
-	}
+  /**
+   * Retrieve the single row of the "Test" Journey
+   * in the killrvideo.spacecraft_journey_catalog tableß
+   */
+  protected Optional<Journey> findTestJourney() {
+    return journeyRepo.find(
+      UUID.fromString(this.TEST_JOURNEYID),
+      this.TEST_SPACECRAFT
+    );
+  }
 }
