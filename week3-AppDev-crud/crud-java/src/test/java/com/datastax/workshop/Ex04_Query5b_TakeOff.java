@@ -29,6 +29,29 @@ public class Ex04_Query5b_TakeOff extends TestFixtures implements DataModelConst
 			this.TEST_SPACECRAFT
 		);
 		LOGGER.info("Journey {} has now taken off", this.TEST_JOURNEYID);
+
+		// Then
+		Optional<Journey> journey = this.findTestJourney();
+
+		Assertions.assertTrue(journey.isPresent(),
+			String.format(
+				"spacecraft_journey_catalog should have a row with\n" +
+					"spacecraft_name = '%s'" +
+					"journey_id = %s",
+				this.TEST_SPACECRAFT,
+				this.TEST_JOURNEYID)
+		);
+
+		Assertions.assertTrue(
+			journey.get().isActive(),
+			"Journey takeoff should set active = true"
+		);
+
+		Assertions.assertTrue(
+				journey.get().getStart().compareTo(Instant.now()) <= 0,
+				"Journey start timestamp should be <= now()"
+		);
+
 		LOGGER.info("SUCCESS");
 	}
 }

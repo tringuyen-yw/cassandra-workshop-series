@@ -20,10 +20,7 @@ public class Ex08_Query4b_Read_Journey_Details extends TestFixtures implements D
      * SELECT * FROM killrvideo.spacecraft_journey_catalog WHERE spacecraft_name='Crew Dragon Endeavour,SpaceX' AND journey_id=8dfd0a30-c73b-11ea-b87b-1325d5aaa06b; 
      */
     public void read_a_journey() {
-        Optional<Journey> j = journeyRepo.find(
-            UUID.fromString(this.TEST_JOURNEYID),
-            this.TEST_SPACECRAFT
-        );
+        Optional<Journey> j = this.findTestJourney();
         
         if (j.isPresent()) {
             Instant takeoffTime = j.get().getStart();
@@ -44,4 +41,5 @@ public class Ex08_Query4b_Read_Journey_Details extends TestFixtures implements D
             LOGGER.info("Journey {} not found, check class 'Ex04_ReadParsePage' or DB", this.TEST_JOURNEYID);
         }
     }
+
 }
