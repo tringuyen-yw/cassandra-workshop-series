@@ -4,6 +4,7 @@ import java.io.File;
 import java.nio.file.Paths;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Optional;
 import java.util.Properties;
 
 import org.junit.jupiter.api.Assertions;
@@ -36,20 +37,20 @@ public class Ex02_Connect_to_Cassandra {
       // Given
       AstraConnectionInfo conn = TestUtils.getInstance().getAstraDBConnectInfo();
 
-      LOGGER.info("Astra Connection info configured in src/test/resources/application-test.properties");
+      LOGGER.info("Astra Connection info configured in src/main/resources/application.conf");
       LOGGER.info(conn.getSecureBundleFilename());
       LOGGER.info("- USERNAME = {}", conn.getUserName());
       LOGGER.info("- PASSWORD = {}", conn.getPassword());
       LOGGER.info("- KEYSPACE = {}", conn.getKeyspace());
 
       // Then #1
-      String failConnInfoMsg = "Please customize Connection info in src/test/resources/application-test.properties";
+      String failConnInfoMsg = "Please customize Connection info in src/main/resources/application.conf";
       Assertions.assertEquals(conn.getUserName(), "KVUser", failConnInfoMsg);
       Assertions.assertEquals(conn.getPassword(), "KVPassword", failConnInfoMsg);
       Assertions.assertEquals(conn.getKeyspace(), "killrvideo", failConnInfoMsg);
 
       Assertions.assertTrue((new File(conn.getSecureBundleFilename())).exists(), 
-        "File '" + conn.getSecureBundleFilename() + "' has not been found\n"
+        "File '" + conn.getSecureBundleFilename() + "' NOT FOUND\n"
         + "To run this sample you need to download the secure bundle file from https://astra.datastax.com\n"
         + "More info here: https://docs.datastax.com/en/astra/aws/doc/dscloud/astra/dscloudShareClusterDetails.html");
 
@@ -61,15 +62,17 @@ public class Ex02_Connect_to_Cassandra {
         .build()) {
     
         // Then
-        CqlIdentifier currKeyspace = cqlSession.getKeyspace().get();
+				Optional<CqlIdentifier> connectedKeyspace = cqlSession.getKeyspace();
+
+				Assertions.assertTrue(connectedKeyspace.isPresent(), "cqlSession must connect to a valid Keyspace");
 
         Assertions.assertEquals(
-          currKeyspace.toString(),
+          connectedKeyspace.get().toString(),
           conn.getKeyspace(),
           "Keyspace name should == " + conn.getKeyspace()
         );
 
-        LOGGER.info("Connected with Keyspace {}", currKeyspace);
+        LOGGER.info("Connected with Keyspace {}", connectedKeyspace.get());
       }
       LOGGER.info("SUCCESS");
       LOGGER.info("========================================");

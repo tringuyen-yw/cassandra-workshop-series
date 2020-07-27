@@ -3,12 +3,9 @@ package com.datastax.workshop;
 import java.net.InetSocketAddress;
 import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.querybuilder.SchemaBuilder;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigException;
+import com.typesafe.config.ConfigFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,39 +40,37 @@ public class TestUtils {
       }
   }
   
-  /**
-   * Init an Astra Connection info from src/test/resources/application-test.properties
-   * This method doesn't attempt to connect to Astra
-   */
-  public AstraConnectionInfo getAstraDBConnectInfo() {
-    final String configFileName = "application-test.properties";
-    InputStream inputStrm;
+	/**
+	 * Read Astra Connection config values from src/main/resources/application.conf
+	 * These configs are unrelated to Cassandra driver config.
+	 * We just leverage the HOCON config format of the Typesafe Config framework
+	 * which is implemented in the DataStax driver to allow us to read the custom config
+	 * https://docs.datastax.com/en/developer/java-driver/4.6/manual/core/configuration/
+	 */
+	public AstraConnectionInfo getAstraDBConnectInfo() {
+		final String configSection = "AstraConnectionAuth";
     AstraConnectionInfo connectInfo = null;
 
     try {
-      Properties prop = new Properties();
-      inputStrm = TestUtils.class.getClassLoader().getResourceAsStream(configFileName);
+			// Make sure we see the changes when reloading:
+			ConfigFactory.invalidateCaches();
 
-      if (inputStrm == null) {
-        String errMsg = "Missing test resources file: src/test/resources/" + configFileName;
-        LOGGER.error(errMsg);
-        throw new FileNotFoundException(errMsg);
-      }
+			// Every config file in the classpath, without stripping the prefixes
+			Config rootConfig = ConfigFactory.load();
 
-      // When
-      //load a properties file from class path, inside static method
-      prop.load(inputStrm);
-      //prop.list(System.out); // list all key-value pairs
+			// The Custom config section added in resources/application.conf:
+			Config astraConnCfg = rootConfig.getConfig(configSection);
 
-      String secureBundleFilename = prop.getProperty("SECURE_CONNECT_BUNDLE_FILE");
-      String userName = prop.getProperty("USERNAME");
-      String clearPwd = prop.getProperty("PASSWORD");
-      String keyspaceName = prop.getProperty("KEYSPACE");
-    
+			String secureBundleFilename = astraConnCfg.getString("SECURE_CONNECT_BUNDLE_FILE");
+			String userName = astraConnCfg.getString("USERNAME");
+			String clearPwd = astraConnCfg.getString("PASSWORD");
+			String keyspaceName = astraConnCfg.getString("KEYSPACE");
+
       connectInfo = new AstraConnectionInfo(secureBundleFilename, userName, clearPwd, keyspaceName);
-      inputStrm.close();
 
-    } catch (IOException ex) {
+    } catch (ConfigException ex) {
+			String errMsg = String.format("Missing section %s in src/main/resources/application.conf", configSection);
+			LOGGER.error(errMsg);
       ex.printStackTrace();
     }
 
