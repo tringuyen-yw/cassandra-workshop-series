@@ -74,18 +74,13 @@ public class JourneyRepository implements DataModelConstants {
      *  Check result with 
      *  select journey_id, spacecraft_name,summary,start,end,active from killrvideo.spacecraft_journey_catalog; 
      */
-    public void takeoff(
-        String spacecraft,
-        UUID journeyId,
-        String journeySummary
-    ) {
-        cqlSession.execute(SimpleStatement.builder(SOLUTION_TAKEOFF)
-                .addPositionalValue(Instant.now())
-                .addPositionalValue(journeySummary)
-                .addPositionalValue(spacecraft)
-                .addPositionalValue(journeyId)
-                .build());
-    }
+		public void takeoff(UUID journeyId, String spacecraft) {
+			cqlSession.execute(SimpleStatement.builder(SOLUTION_TAKEOFF)
+						.addPositionalValue(Instant.now())
+						.addPositionalValue(spacecraft)
+						.addPositionalValue(journeyId)
+						.build());
+		}
     
     /**
      * Save a few readings 
@@ -161,19 +156,14 @@ public class JourneyRepository implements DataModelConstants {
                  .build());
         cqlSession.execute(bb.build());
     }
-    
-    public void landing(
-        String spacecraft,
-        UUID journeyId,
-        String journeySummary
-    ) {
-        cqlSession.execute(SimpleStatement.builder(SOLUTION_LANDING)
-                .addPositionalValue(Instant.now())
-                .addPositionalValue(journeySummary)
-                .addPositionalValue(spacecraft)
-                .addPositionalValue(journeyId)
-                .build());
-    }
+
+		public void landing(UUID journeyId, String spacecraft) {
+			cqlSession.execute(SimpleStatement.builder(SOLUTION_LANDING)
+						.addPositionalValue(Instant.now())
+						.addPositionalValue(spacecraft)
+						.addPositionalValue(journeyId)
+						.build());
+		}
 
     public void delete(String spacecraft, UUID journeyId) {
         BatchStatementBuilder bb = new BatchStatementBuilder(BatchType.LOGGED);
@@ -274,16 +264,16 @@ public class JourneyRepository implements DataModelConstants {
     private static final String SOLUTION_INSERT = 
             "INSERT INTO spacecraft_journey_catalog (spacecraft_name, journey_id, active, summary) "
           + "VALUES(?,?,?,?)";
-    
-    private static final String SOLUTION_TAKEOFF =
-            "UPDATE spacecraft_journey_catalog "
-                    + "SET active=true, start=?, summary=? "
-                    + "WHERE spacecraft_name=? AND journey_id=?";
-    
-    private static final String SOLUTION_LANDING = 
-            "UPDATE spacecraft_journey_catalog "
-                    + "SET active=false, end=?, summary=? "
-                    + "WHERE spacecraft_name=? AND journey_id=?";
+
+		private static final String SOLUTION_TAKEOFF =
+					"UPDATE spacecraft_journey_catalog "
+								+ "SET active=true, start=? "
+								+ "WHERE spacecraft_name=? AND journey_id=?";
+
+		private static final String SOLUTION_LANDING =
+					"UPDATE spacecraft_journey_catalog "
+								+ "SET active=false, end=? "
+								+ "WHERE spacecraft_name=? AND journey_id=?";
     
     private static final String SOLUTION_READ_JOURNEY =
             "SELECT * FROM spacecraft_journey_catalog "
