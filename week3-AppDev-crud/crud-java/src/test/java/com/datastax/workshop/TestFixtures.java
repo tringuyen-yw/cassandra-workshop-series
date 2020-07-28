@@ -24,6 +24,9 @@ public class TestFixtures {
   /** Use the Repository Pattern. */
   protected static JourneyRepository journeyRepo;
 
+  protected static AstraConnectionInfo astraConn =
+    TestUtils.getInstance().getAstraDBConnectInfo();
+
   // common logger used by test class instance
   protected Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
@@ -32,20 +35,18 @@ public class TestFixtures {
   protected String TEST_JOURNEYID      = "8dfd0a30-c73b-11ea-b87b-1325d5aaa06b";
   protected String TEST_JOURNEYSUMMARY = "Bring Astronauts to ISS";
 
-
   @BeforeAll
   public static void initConnection() {
     STATICLOGGER.info("========================================");
     STATICLOGGER.info("Init CqlSession");
     //TestUtils.getInstance().createKeyspaceForLocalInstance();
 
-    AstraConnectionInfo conn = TestUtils.getInstance().getAstraDBConnectInfo();
-
     cqlSession = CqlSession.builder()
-    .withCloudSecureConnectBundle(Paths.get(conn.getSecureBundleFilename()))
-    .withAuthCredentials(conn.getUserName(), conn.getPassword())
-    .withKeyspace(conn.getKeyspace())
-    .build();
+      .withCloudSecureConnectBundle(Paths.get(astraConn.getSecureBundleFilename()))
+      .withAuthCredentials(astraConn.getUserName(), astraConn.getPassword())
+      .withKeyspace(astraConn.getKeyspace())
+      .build();
+
     STATICLOGGER.info("Init JourneyRepository");
     journeyRepo = new JourneyRepository(cqlSession);
  }
