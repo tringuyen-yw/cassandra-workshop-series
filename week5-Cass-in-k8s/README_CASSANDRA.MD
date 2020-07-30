@@ -148,17 +148,44 @@ The previous section created a new resource type in your Kubernetes cluster, the
 
 *Optionally* You can execute few commands to see what has also been created under the hood:
 ```bash
-# List created services (2 expected metrics and webhook-service)
+#---List created services (2 expected metrics and webhook-service)
 kubectl -n cass-operator get svc
 
-# List of created Secrets (3 expected, 2 for operator)
+# example of output
+NAME                                  TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)             AGE
+cass-operator-metrics                 ClusterIP   10.152.183.45    <none>        8383/TCP,8686/TCP   6m53s
+cassandradatacenter-webhook-service   ClusterIP   10.152.183.242   <none>        443/TCP             7m1s
+
+
+#---List of created Secrets (3 expected, 2 for operator)
 kubectl -n cass-operator get secret
+
+# example of output
+NAME                           TYPE                                  DATA   AGE
+cass-operator-token-kqlfd      kubernetes.io/service-account-token   3      7m16s
+cass-operator-webhook-config   Opaque                                2      7m16s
+default-token-dcz48            kubernetes.io/service-account-token   3      7m16s
+istio.cass-operator            istio.io/key-and-cert                 3      7m15s
+istio.default                  istio.io/key-and-cert                 3      7m15s
+
 
 # Expected an empty list but no error the CRD cassandradatacenter now exist
 kubectl -n cass-operator get cassandradatacenter
 
-# Expected output 1 line
+#---Confirm the custom resource CassandraDatacenter has been created
+kubectl api-resources --api-group=cassandra.datastax.com
+
+# console output
+NAME                   SHORTNAMES       APIGROUP                 NAMESPACED   KIND
+cassandradatacenters   cassdc,cassdcs   cassandra.datastax.com   true         CassandraDatacenter
+
+
+#---Expected output 1 line
 kubectl -n cass-operator get configMap
+
+# example of output
+NAME                 DATA   AGE
+cass-operator-lock   0      8m45s
 ```
 
 [🏠 Back to Table of Contents](#exercises)
@@ -341,7 +368,7 @@ echo aDVpTUhtOFJwb09mU1hVWE5pR1QtV1BmSmE3dGJ3VjlwbGo0SVRZd0h5Z2h4SmxRTzJ5U1VR | 
 ```
 📗 **Sample output**
 ```bash
--WPfJa7tbwV9plj4ITYwHyghxJlQO2ySUQ
+h5iMHm8RpoOfSXUXNiGT-WPfJa7tbwV9plj4ITYwHyghxJlQO2ySUQ
 ```
 
 **✅ Step 3d. Execute the command to login to a pod with SSH**
@@ -392,7 +419,7 @@ cluster1-superuser@cqlsh> CREATE KEYSPACE IF NOT EXISTS killrvideo1 WITH replica
 
 **✅ Step 3h. Describe keyspaces with a CQL command**
 ```bash
-cluster1-superuser@cqlsh> describe keyspaces;
+cluster1-superuser@cqlsh> DESCRIBE KEYSPACES;
 ```
 📗 **Sample output**
 ```bash
@@ -402,7 +429,7 @@ system_auth    system_distributed  killrvideo1
 
 **✅ Step 3i. Create tables and insert some data**
 ```bash
-cluster1-superuser@cqlsh> use killrvideo1;
+cluster1-superuser@cqlsh> USE killrvideo1;
 cluster1-superuser@cqlsh:killrvideo1>
 ```
 ```sql
@@ -453,7 +480,7 @@ INSERT INTO killrvideo1.users (userid, created_date, firstname, lastname, email)
 
 **✅ Step 3j. Show the `users` tables**
 ```bash
-cluster1-superuser@cqlsh:killrvideo1> select * from users;
+cluster1-superuser@cqlsh:killrvideo1> SELECT * FROM users;
 ```
 📗 **Sample output**
 ```bash
@@ -464,7 +491,7 @@ cluster1-superuser@cqlsh:killrvideo1> select * from users;
  33333333-3333-3333-3333-333333333333 | 2020-04-24 11:57:08.925000+0000 | cl@datastax.com |   Cedrick |    Lunven
 
 (3 rows)
-cluster1-superuser@cqlsh:killrvideo1> select * from videos;
+cluster1-superuser@cqlsh:killrvideo1> SELECT * FROM videos;
 
  videoid                              | added_date                      | description                                                             | location | location_type | name                   | preview_image_location | tags | userid
 --------------------------------------+---------------------------------+-------------------------------------------------------------------------+----------+---------------+------------------------+------------------------+------+--------
@@ -549,9 +576,9 @@ It is a best practice to change the `yaml` file and then applying the new file. 
 ```bash
 # List datacenters (dnochange)
 kubectl -n cass-operator get cassandradatacenter
-# List statefulset (no change)
+# List statefulset (cluster1-dc1-default-sts now has READY n/3, was 1/1)
 kubectl -n cass-operator get sts
-# List Services (no changel)
+# List Services (no change)
 kubectl -n cass-operator get svc
 # List pods (our new Cassandra node)
 kubectl -n cass-operator get pods
@@ -601,7 +628,7 @@ cluster1-superuser@cqlsh>
 
 **✅ Step 5b. Describe the keyspace `killvideo1`**
 ```sql
-describe keyspace killrvideo1;
+DESCRIBE KEYSPACE killrvideo1;
 ```
 📗 **Sample output**
 ```sql
@@ -656,12 +683,12 @@ CREATE TABLE killrvideo1.videos (
 
 **✅ Step 5c. Change the replication factor of `killvideo1`**
 ```sql
-alter keyspace killrvideo1 with replication={'class':'NetworkTopologyStrategy', 'dc1':3};
+ALTER KEYSPACE killrvideo1 with replication={'class':'NetworkTopologyStrategy', 'dc1':3};
 ```
 
 **✅ Step 5d. Describe the keyspace `killvideo1`**
 ```sql
-describe keyspace killrvideo1
+DESCRIBE KEYSPACE killrvideo1
 ```
 📗 **Sample output**
 ```sql
@@ -680,7 +707,7 @@ Consistency level set to QUORUM.
 
 **✅ Step 5f. Enable tracing in CQLSH console**
 ```bash
-cluster1-superuser@cqlsh> tracing on;
+cluster1-superuser@cqlsh> TRACING ON;
 ```
 📗 **Sample output**
 ```
@@ -689,7 +716,7 @@ Now Tracing is enabled
 
 **✅ Step 5g. Show a record from the table `videos`**
 ```sql
-select * from killrvideo1.videos WHERE videoid=99999999-3333-3333-3333-333333333333;
+SELECT * FROM killrvideo1.videos WHERE videoid=99999999-3333-3333-3333-333333333333;
 ```
 📗 **Sample output**
 ```bash
