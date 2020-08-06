@@ -28,11 +28,11 @@ This is an example of a Spring Boot Microservice for use with the Astra Getting 
 
 This application serves as the connection between the UI website and an underlying Astra database. It has Swagger installed so once it is running you can look at the Swagger UI here:
 
-```http://localhost:8080/```
+```http://localhost:5000/```
 
 ### Connecting to Astra with a Secure Connect Bundle
 
-To see how to connect to Astra using the Secure Connect Bundle you can look at the `connectToAstra()` method in [SessionManager](src/main/java/com/datastax/astra/dao/SessionManager.java).  In this method you will find the code which:
+To see how to connect to Astra using the Secure Connect Bundle you can look at the `getCqlSession()` method in [SessionManager](src/main/java/com/datastax/astra/dao/SessionManager.java).  In this method you will find the code which:
 
 1. Creates a `Cluster` instance using the builder.
    
@@ -85,7 +85,7 @@ cd getting-started-with-astra-java
 mvn spring-boot:run
 ```
 
-This will startup the application running on `http://localhost:8080`
+This will startup the application running on `http://localhost:5000`
 
 You will know that you are up and working when you get the following in your terminal window:
 
@@ -95,7 +95,7 @@ You will know that you are up and working when you get the following in your ter
 
 #### c) Access the API documentation from a browser
 
-[http://localhost:8080](http://localhost:8080)
+[http://localhost:5000](http://localhost:5000)
 
 *Note: If you want to change the listening port of the application, locate the file `src/main/resources/application.yml` and change key `server.port`*
 
@@ -104,9 +104,17 @@ You will know that you are up and working when you get the following in your ter
 To setup the UI to connect to Java backend define a `.env` file in the `getting-started-with-astra-ui` project main directory. Inside the file it should have one entry pointing to this project's API endpoint:
 
 ```
-BASE_ADDRESS=http://localhost:8080/api
+export BASE_ADDRESS=http://localhost:5000/api
 ```
-Once you start that project with a `npm run build` it will point the UI to the backend API which will then be using Astra as a database. When you first connect to the UI, a dialog box will open asking for Astra connection information. 
+
+Once you start that project with 
+
+```
+npm install
+npm run start
+```
+
+it will point the UI to the backend API which will then be using Astra as a database. When you first connect to the UI by opening http://localhost:3000/ in a browser , a dialog box will open asking for Astra connection information. 
 
 # II - Building the docker image
 
@@ -117,10 +125,10 @@ mvn clean install
 
 Then build the images using the following command in same folder as `pom.xml` file:
 ```
-mvn dockerfile:build 
+mvn clean package dockerfile:build
 ```
 
 To run the project in docker and expose correct port use the following:
 ```
-docker run clunven/getting-started-with-astra-java:latest -p 8080:8080
+docker run astra-backend:my-image -p 5000:5000
 ```

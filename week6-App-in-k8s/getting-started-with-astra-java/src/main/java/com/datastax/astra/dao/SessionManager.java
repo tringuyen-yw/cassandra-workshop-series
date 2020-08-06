@@ -35,10 +35,10 @@ public class SessionManager {
     /** Connectivity Attributes. */
     public static boolean useAstra = true;
     
-    private String  userName;
-    private String  password;
-    private String  keySpace;
-    private String  secureConnectionBundlePath;
+    private String  userName = "KVUser";
+    private String  password = "KVPassword";
+    private String  keySpace = "killrvideo";
+    private String  secureConnectionBundlePath = "/Users/tri/Documents/CASSANDRA/secure-connect-killrvideocluster.zip";
     
     /** Status and working session. */
     private boolean initialized = false;
